@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px; /* Adjust as needed for spacing below the box */
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"], input[type="tel"] {
+            width: calc(100% - 20px); /* Adjust width to account for padding */
+            padding: 10px;
+            margin-bottom: 20px; /* Increase if more space is needed */
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box; /* Ensures padding doesn't affect overall width */
+        }
+        .errors {
+            color: red;
+            margin: 0;
+            padding: 0;
+            margin-bottom: 20px; /* Add space below errors */
+        }
+        .errors li {
+            list-style-type: none;
+            margin-bottom: 5px; /* Space between error messages if there are multiple */
+        }
+        button {
+            width: calc(100% - 20px); /* Adjust width to account for padding */
+            padding: 10px;
+            margin-top: 20px; /* Ensure there's space above the button */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Register</h2>
+        <form action="/" method="post">
+            {{ form.hidden_tag() }}
+            <div>
+                <label for="name">Name:</label>
+                {{ form.name(size=20) }}
+                {% if form.name.errors %}
+                    <ul class="errors">
+                        {% for error in form.name.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div>
+                <label for="phone_number">Phone Number:</label>
+                {{ form.phone(size=20) }}
+                {% if form.phone.errors %}
+                    <ul class="errors">
+                        {% for error in form.phone.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                {{ form.password(size=20) }}
+                {% if form.password.errors %}
+                    <ul class="errors">
+                        {% for error in form.password.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="/login_user">Login Here</a></p>
+    </div>
+</body>
+</html>

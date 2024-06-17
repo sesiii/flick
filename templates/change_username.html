@@ -1,0 +1,112 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Username</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        input[type=text], button[type=submit] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; /* Added to include padding in the element's total width and height */
+        }
+        button[type=submit] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button[type=submit]:hover {
+            background-color: #0056b3;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST">
+        <h2>Change Username</h2>
+        <label for="new_username">New Username:</label>
+        <input type="text" id="new_username" name="new_username" required>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Username</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        input[type=text], button[type=submit] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button[type=submit] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button[type=submit]:hover {
+            background-color: #0056b3;
+        }
+        button[type=submit].disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST">
+        <h2>Change Username</h2>
+        <label for="new_username">New Username:</label>
+        <input type="text" id="new_username" name="new_username" required {{ 'disabled' if username_changed }}>
+        <button type="submit" {{ 'disabled' if username_changed }} class="{{ 'disabled' if username_changed }}">Submit</button>
+    </form>
+</body>
+</html>

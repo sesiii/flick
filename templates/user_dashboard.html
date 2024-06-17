@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+        .dashboard-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .info p, .actions button {
+            font-size: 18px; /* Adjusted for consistency */
+            margin-bottom: 10px;
+        }
+        .actions button {
+            cursor: pointer;
+            padding: 10px 20px; /* Adjusted padding */
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 18px; /* Adjusted font size */
+        }
+        .actions button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            border-radius: 50%;
+            margin-top: 20px;
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>User Dashboard</h1>
+        <div class="info">
+            <p>Username: {{ username }}</p>
+            <p>Phone: {{ phone }}</p>
+            <img src="https://robohash.org/{{ username }}" alt="Profile Picture">
+        </div>
+        <div class="actions">
+            <button onclick="window.location.href='{{ url_for('change_username') }}'">Update Username</button>
+            <button onclick="window.location.href='{{ url_for('update_user') }}'">Update Details</button>
+            <button onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+        </div>
+    </div>
+</body>
+</html>
