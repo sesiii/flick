@@ -77,6 +77,11 @@
         <input type="password" id="new_password" name="new_password" placeholder="Enter new password" value="{{ current_user.password}}"required>
         <span id="pass-status" class="show-password" onclick="togglePassword()">&#128065;</span>
 
+        <div>
+            <label for="online_status">Visible as Online:</label>
+            <input type="checkbox" id="online_status" name="online_status" {{ 'checked' if online_status else '' }}>
+        </div>
+        
         <input type="submit" value="Update Details">
     </form>
 </body>

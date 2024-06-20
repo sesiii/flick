@@ -1,3 +1,73 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+        .dashboard-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .info p, .actions button {
+            font-size: 18px; /* Adjusted for consistency */
+            margin-bottom: 10px;
+        }
+        .actions button {
+            cursor: pointer;
+            padding: 10px 20px; /* Adjusted padding */
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 18px; /* Adjusted font size */
+        }
+        .actions button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            border-radius: 50%;
+            margin-top: 20px;
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>User Dashboard</h1>
+        <div class="info">
+            <p>Username: {{ username }}</p>
+            <p>Phone: {{ phone }}</p>
+            <img src="https://robohash.org/{{ username }}" alt="Profile Picture">
+        </div>
+        <div class="actions">
+            <button onclick="window.location.href='{{ url_for('change_username') }}'">Update Username</button>
+            <button onclick="window.location.href='{{ url_for('update_user') }}'">Update Details</button>
+            <button onclick="window.location.href='{{ url_for('online_users') }}'">View Online Users</button>
+            <button onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+        </div>
+    </div>
+</body>
+</html> -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,8 +130,123 @@
         <div class="actions">
             <button onclick="window.location.href='{{ url_for('change_username') }}'">Update Username</button>
             <button onclick="window.location.href='{{ url_for('update_user') }}'">Update Details</button>
+            <button onclick="window.location.href='{{ url_for('online_users') }}'">View Online Users</button>
+            <button onclick="window.location.href='{{ url_for('nearby_users') }}'">View Nearby Users</button>
             <button onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
         </div>
+
+
+        <!-- Location Section -->
+        <div class="location-section">
+            <h2>Your Location</h2>
+            <p id="location">Fetching location...</p>
+        </div>
+
+        <!-- Bluetooth Devices Section -->
+        <div class="bluetooth-section">
+            <h2>Nearby Bluetooth Devices</h2>
+            <button id="scan-bluetooth">Scan for Devices</button>
+            <ul id="bluetooth-devices-list"></ul>
+        </div>
     </div>
+    </div>
+
+    
+    <!-- <script>
+        // Get the location of the user
+        navigator.geolocation.getCurrentPosition((position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            document.getElementById('location').textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+        });
+
+        // Scan for nearby Bluetooth devices
+        // const scanButton = document.getElementById('scan-bluetooth');
+        // const bluetoothDevicesList = document.getElementById('bluetooth-devices-list');
+
+        // scanButton.addEventListener('click', async () => {
+        //     try {
+        //         const devices = await navigator.bluetooth.requestDevice({
+        //             acceptAllDevices: true
+        //         });
+        //         devices.forEach(device => {
+        //             const listItem = document.createElement('li');
+        //             listItem.textContent = device.name;
+        //             bluetoothDevicesList.appendChild(listItem);
+        //         });
+        //     } catch (error) {
+        //         console.error('An error occurred while scanning for devices:', error);
+        //     }
+        // });
+
+        // Bluetooth
+        document.getElementById('scan-bluetooth').addEventListener('click', function() {
+            if (navigator.bluetooth) {
+                navigator.bluetooth.requestDevice({ acceptAllDevices: true })
+                .then(device => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = device.name || 'Unnamed device';
+                    document.getElementById('bluetooth-devices-list').appendChild(listItem);
+                })
+                .catch(error => {
+                    console.error('Bluetooth error:', error);
+                });
+            } else {
+                console.log('Web Bluetooth is not supported in this browser.');
+            }
+        });
+    </script> -->
+
+    <script>
+        // Get the location of the user
+        navigator.geolocation.getCurrentPosition((position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            document.getElementById('location').textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+
+            // Send the location to the backend
+            fetch('/update_location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Include credentials if needed for authentication
+                    'credentials': 'include'
+                },
+                body: JSON.stringify({ location: `${latitude}, ${longitude}` }),
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }, (error) => {
+            document.getElementById('location').textContent = 'Failed to retrieve location. ' + error.message;
+        });
+
+        // Bluetooth Device Scanning
+        document.getElementById('scan-bluetooth').addEventListener('click', function() {
+            if (!navigator.bluetooth) {
+                console.error('Web Bluetooth is not supported in this browser.');
+                alert('Web Bluetooth is not supported in this browser.');
+                return;
+            }
+
+            navigator.bluetooth.requestDevice({ acceptAllDevices: true })
+            .then(device => {
+                const bluetoothDevicesList = document.getElementById('bluetooth-devices-list');
+                // Clear the list before adding new devices to avoid duplicates
+                bluetoothDevicesList.innerHTML = '';
+                const listItem = document.createElement('li');
+                listItem.textContent = device.name || 'Unnamed device';
+                bluetoothDevicesList.appendChild(listItem);
+            })
+            .catch(error => {
+                console.error('Bluetooth error:', error);
+                alert('An error occurred while scanning for devices: ' + error.message);
+            });
+        });
+    </script>
+    
+
 </body>
 </html>

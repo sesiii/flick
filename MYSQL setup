@@ -1,0 +1,11 @@
+CREATE DATABASE flick;
+
+CREATE TABLE `user` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `phone` VARCHAR(20) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
+    `username` VARCHAR(255) NOT NULL UNIQUE,
+    `username_changed` TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

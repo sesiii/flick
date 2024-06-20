@@ -10,6 +10,7 @@ from flask import Flask, jsonify, render_template
 from flask_login import current_user, login_required
 from flask import flash, redirect, render_template, request, url_for
 # from flaskext.mysql import MySQL
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -25,6 +26,9 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False)
     username_changed = db.Column(db.Boolean, default=False)
     username = db.Column(db.String(255), unique=True, nullable=False)
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    online_status = db.Column(db.Boolean, default=False)
+    last_location = db.Column(db.String(255))
 
 import random
 
@@ -142,6 +146,62 @@ def user_dashboard():
     # profile_photo = get_random_image_url()
     return render_template('user_dashboard.html', username=username, phone=phone)
 
+@app.route('/update_location', methods=['POST'])
+@login_required
+def update_location():
+    # Get location data from the request
+    location = request.json.get('location')
+    if location:
+        # Update the current user's last location
+        current_user.last_location = location
+        db.session.commit()
+        return jsonify({"success": True, "message": "Location updated successfully."})
+    else:
+        return jsonify({"success": False, "message": "Location not provided."}), 400
+    
+import math
+
+# Define the filter function
+def distance_format(value):
+    """Format the distance to two decimal places and append 'km'."""
+    return f"{value:.2f} km"
+
+# Register the filter with the app's Jinja2 environment
+app.jinja_env.filters['distance_format'] = distance_format
+
+def get_nearby_users(current_user, max_distance_km):
+    nearby_users = []
+    for user in User.query.all():  # Assuming User is your user model
+        distance = haversine(current_user.lat, current_user.lon, user.lat, user.lon)
+        if distance <= max_distance_km:
+            nearby_users.append((user, distance))
+    return nearby_users
+
+def haversine(lat1, lon1, lat2, lon2):
+    # Earth radius in kilometers
+    R = 6371.0
+
+    # Convert decimal degrees to radians
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+
+    # Haversine formula
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    distance = R * c
+    return distance
+
+from flask import session
+from datetime import datetime, timedelta
+from flask_login import current_user
+
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()
 
 @app.route("/change_username", methods=['GET', 'POST'])
 @login_required
@@ -161,6 +221,13 @@ def change_username():
     
     return render_template('change_username.html')
 
+from sqlalchemy import func
+
+def get_online_users():
+    # Assuming User is your user model and online_status is a boolean attribute
+    online_users = User.query.filter_by(online_status=True).all()
+    return online_users
+
 @app.route("/update_user", methods=['GET', 'POST'])
 @login_required
 def update_user():
@@ -168,6 +235,7 @@ def update_user():
         new_username = request.form.get('new_username')
         new_phone = request.form.get('new_phone')
         new_password = request.form.get('new_password')
+        online_status = 'online_status' in request.form  # Checks if online_status checkbox is checked
 
         # Update the username if it has not been changed before and a new username is provided
         if not current_user.username_changed and new_username:
@@ -185,10 +253,50 @@ def update_user():
             current_user.password = new_password
             flash('Your password has been updated!', 'success')
 
+        # Update online status
+        current_user.online_status = online_status
+        flash('Your online status has been updated!', 'success')
+
         db.session.commit()
         return redirect(url_for('user_dashboard'))
 
-    return render_template('update_user.html')
+    return render_template('update_user.html', online_status=current_user.online_status)
+
+@app.route('/online_users')
+@login_required
+def online_users():
+    # Assuming get_online_users is defined somewhere in this file or imported
+    users = get_online_users()
+    return render_template('online_users.html', users=users, get_online_users=get_online_users)
+
+@app.route('/nearby_users')
+@login_required
+def nearby_users():
+    # Check if current user's last_location is not None and split, else set to None
+    if current_user.last_location:
+        current_user_lat, current_user_lon = map(float, current_user.last_location.split(','))
+    else:
+        flash('Your location is not set. Please update your location to find nearby users.', 'error')
+        return redirect(url_for('update_location'))  # Assuming there's a route to update location
+
+    # Fetch all users except the current user
+    users = User.query.filter(User.id != current_user.id).all()
+    users_with_distance = []
+
+    for user in users:
+        if user.last_location:  # Ensure user has a location set
+            try:
+                user_lat, user_lon = map(float, user.last_location.split(','))
+                distance = haversine(current_user_lat, current_user_lon, user_lat, user_lon)
+                users_with_distance.append((user, distance))
+            except ValueError:
+                # Log error or pass if user's location is improperly formatted
+                pass
+
+    # Sort users by distance
+    sorted_users_with_distance = sorted(users_with_distance, key=lambda x: x[1])
+
+    return render_template('nearby_users.html', users_with_distance=sorted_users_with_distance)
 @app.route("/logout")
 def logout():
     logout_user()
