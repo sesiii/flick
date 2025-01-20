@@ -1,104 +1,40 @@
-# Flick
+# User Dashboard with Location and Bluetooth Integration
 
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+This is a web-based user dashboard that allows users to view their profile, update details, see nearby users, fetch their location, and scan for nearby Bluetooth devices. It combines user interactivity with real-time geolocation and Web Bluetooth API functionalities.
 
-Flick is a web-based application built with HTML and Python. The project aims to provide a seamless user experience for managing and sharing multimedia content.
-
-## Table of Contents
-
-- [Features](#features)
-- [Demo](#demo)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+---
 
 ## Features
 
-- User-friendly interface for managing multimedia content
-- Secure user authentication and authorization
-- Real-time updates and notifications
-- Responsive design for mobile and desktop devices
+- **User Profile Management**: 
+  - Display username, phone number, and a profile picture generated dynamically using [RoboHash](https://robohash.org/).
 
-## Demo
+- **Interactive Actions**:
+  - Update username or user details.
+  - View online and nearby users.
+  - Logout securely.
 
-A live demo of the application can be found at [Flick Demo](https://your-demo-url.com).
+- **Location Integration**:
+  - Fetch the user's current geographic location (latitude and longitude).
+  - Send location data to the backend for updates.
 
-## Installation
+- **Bluetooth Integration**:
+  - Scan for nearby Bluetooth devices using the Web Bluetooth API.
+  - Display discovered devices in real-time.
 
-To get a local copy up and running, follow these simple steps:
+- **Responsive Design**:
+  - A user-friendly interface styled with CSS for a seamless experience.
 
-### Prerequisites
+---
 
-Make sure you have the following installed:
+## Technologies Used
 
-- [Python](https://www.python.org/downloads/) (version 3.6 or higher)
-- [pip](https://pip.pypa.io/en/stable/installation/) (Python package installer)
-- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- **Frontend**:
+  - HTML5, CSS3, JavaScript (including Web APIs like Geolocation and Bluetooth).
 
-### Clone the Repository
+- **Backend**:
+  - Flask (for `url_for` routing, location updates, and backend integration).
 
-
-git clone https://github.com/sesiii/flick.git
-cd flick
-
-Create a Virtual Environment
-sh
-
-python3 -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-
-Install Dependencies
-sh
-
-pip install -r requirements.txt
-
-Run the Application
-sh
-
-python app.py
-
-The application should now be running on http://localhost:5000.
-Usage
-User Authentication
-
-    Register a new account
-    Log in with your credentials
-    Reset your password if forgotten
-
-Managing Multimedia Content
-
-    Upload new multimedia files
-    Organize content into albums
-    Share content with other users
-    Edit or delete existing content
-
-Notifications
-
-    Receive real-time updates on shared content
-    Get notified of new comments and likes
-
-Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
-
-    Fork the Project
-    Create your Feature Branch (git checkout -b feature/AmazingFeature)
-    Commit your Changes (git commit -m 'Add some AmazingFeature')
-    Push to the Branch (git push origin feature/AmazingFeature)
-    Open a Pull Request
-
-Please make sure to update tests as appropriate.
-License
-
-Distributed under the MIT License. See LICENSE for more information.
-Acknowledgements
-
-    Python
-    Flask
-    Bootstrap
-    Font Awesome
-    Unsplash
-
-
+- **APIs**:
+  - Geolocation API for fetching user's location.
+  - Web Bluetooth API for discovering nearby Bluetooth devices.
