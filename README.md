@@ -38,3 +38,7 @@ This is a web-based user dashboard that allows users to view their profile, upda
 - **APIs**:
   - Geolocation API for fetching user's location.
   - Web Bluetooth API for discovering nearby Bluetooth devices.
+
+-**LLAMA 3.1 8B chat bot**:
+  -- Integrated a LLAMA 3.1 8B chat bot on the user_dashboard.html for direct easy interaction with an AI bot within the application
+  
