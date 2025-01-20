@@ -101,7 +101,4 @@ Acknowledgements
     Font Awesome
     Unsplash
 
-Feel free to customize this README file to fit the specific needs and details of your project. Happy coding!
-Code
 
-This `README.md` file provides a clear and detailed overview of the project, including install
